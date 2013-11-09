@@ -8,9 +8,9 @@ requirements:
 services:
   ${name}-db: mysql
 env:
-  DJANGO_SETTINGS_MODULE: ${name}.settings
+  DJANGO_SETTINGS_MODULE: base.settings
 processes:
-  web: $STACKATO_UWSGI --check-static $HOME/public --module=${name}.wsgi:application
+  web: $STACKATO_UWSGI --check-static $HOME/public --module=base.wsgi:application
 hooks:
   post-staging:
     - python manage.py syncdb --noinput
