@@ -3,7 +3,7 @@ import os
 import json
 import urlparse
 
-from utils import path, BASE, PROJECT
+from utils import path, BASE, PROJECT, has_setting, get_setting
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -12,7 +12,6 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
     'default': {
@@ -25,8 +24,8 @@ DATABASES = {
     }
 }
 
-if 'DATABASE_URL' in os.environ:
-    url = urlparse.urlparse(os.environ['DATABASE_URL'])
+if has_setting('DATABASE_URL'):
+    url = urlparse.urlparse(get_setting('DATABASE_URL'))
     DATABASES['default'] = {
         'NAME': url.path[1:],
         'USER': url.username,
@@ -41,6 +40,9 @@ if 'DATABASE_URL' in os.environ:
 
     DEBUG = False
 
+if has_setting('DEBUG'):
+    DEBUG = get_setting('DEBUG')
+
 TEMPLATE_DEBUG = DEBUG
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
@@ -52,6 +54,9 @@ if 'VCAP_APPLICATION' in os.environ:
     # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
     vcap_app = json.loads(os.environ['VCAP_APPLICATION'])
     ALLOWED_HOSTS = [vcap_app['uris']]
+
+if has_setting('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS = get_setting('ALLOWED_HOSTS')
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
