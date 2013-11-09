@@ -3,11 +3,7 @@ import os
 import json
 import urlparse
 
-def path(*x):
-    return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), *x)
-
-BASE = os.path.basename(os.path.dirname(__file__))
-PROJECT = os.path.basename(os.path.dirname(os.path.dirname(__file__)))
+from utils import path, BASE, PROJECT
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
