@@ -1,4 +1,4 @@
-ignores: ['*.sqlite', 'static', '*.pyc']
+ignores: ['.*', '*.pyc', '*.sqlite', 'bin', 'include', 'lib', 'public']
 framework:
   type: python
   runtime: python27
