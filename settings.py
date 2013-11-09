@@ -6,7 +6,8 @@ import urlparse
 def path(*x):
     return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), *x)
 
-PROJECT = os.path.basename(__file__)
+BASE = os.path.basename(os.path.dirname(__file__))
+PROJECT = os.path.basename(os.path.dirname(os.path.dirname(__file__)))
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -136,7 +137,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'website.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = "%s.wsgi.application" % PROJECT
+WSGI_APPLICATION = "%s.wsgi.application" % BASE
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
