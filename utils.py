@@ -11,11 +11,7 @@ BASE = os.path.basename(os.path.dirname(__file__))
 PROJECT = os.path.basename(BASEDIR)
 
 config = ConfigParser()
-
-config.add_section("general")
-config.add_section("security")
-config.set("general", "debug", "true")
-config.set("security", "hosts", "localhost")
+config.read(path("base", "defaults.ini"))
 
 if "VCAP_APPLICATION" in os.environ:
     # Hosts/domain names that are valid for this site; required if DEBUG is False
