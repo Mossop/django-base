@@ -3,7 +3,7 @@ import os
 import json
 import urlparse
 
-from utils import path, BASE, PROJECT, has_setting, get_setting
+from utils import path, BASE, PROJECT, config
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -11,52 +11,27 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DEBUG = True
-
+url = urlparse.urlparse(config.get("general", "database"))
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': path("%s.sqlite" % PROJECT),
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
-
-if has_setting('DATABASE_URL'):
-    url = urlparse.urlparse(get_setting('DATABASE_URL'))
-    DATABASES['default'] = {
+    "default": {
+        'ENGINE': 'django.db.backends.' + url.scheme,
         'NAME': url.path[1:],
         'USER': url.username,
         'PASSWORD': url.password,
         'HOST': url.hostname,
         'PORT': url.port,
     }
-    if url.scheme == 'postgres':
-        DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
-    elif url.scheme == 'mysql':
-        DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+}
 
-    DEBUG = False
+if url.scheme == 'postgres':
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 
-if has_setting('DEBUG'):
-    DEBUG = get_setting('DEBUG')
-
+DEBUG = config.get("general", "debug") == "true"
 TEMPLATE_DEBUG = DEBUG
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['localhost']
-
-if 'VCAP_APPLICATION' in os.environ:
-    # Hosts/domain names that are valid for this site; required if DEBUG is False
-    # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-    vcap_app = json.loads(os.environ['VCAP_APPLICATION'])
-    ALLOWED_HOSTS = [vcap_app['uris']]
-
-if has_setting('ALLOWED_HOSTS'):
-    ALLOWED_HOSTS = get_setting('ALLOWED_HOSTS')
+ALLOWED_HOSTS = config.get("security", "hosts").split(",")
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -116,7 +91,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '0vcy+8+w(hs$brl#u+pm^=441&$)9&zkg1ni0c($4knoo9g^n%'
+SECRET_KEY = config.get("security", "secret")
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (

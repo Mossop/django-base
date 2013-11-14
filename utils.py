@@ -1,4 +1,6 @@
 import os
+import random
+from ConfigParser import ConfigParser
 
 BASEDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -8,20 +10,28 @@ def path(*x):
 BASE = os.path.basename(os.path.dirname(__file__))
 PROJECT = os.path.basename(BASEDIR)
 
-def has_setting(name):
-    try:
-        import config
-        if hasattr(config, name):
-            return True
-    except:
-        pass
-    return name in os.environ
+config = ConfigParser()
 
-def get_setting(name):
-    try:
-        import config
-        if hasattr(config, name):
-            return getattr(config, name)
-    except:
-        pass
-    return os.environ[name]
+config.add_section("general")
+config.add_section("security")
+config.set("general", "debug", "true")
+config.set("security", "hosts", "localhost")
+
+if "VCAP_APPLICATION" in os.environ:
+    # Hosts/domain names that are valid for this site; required if DEBUG is False
+    # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+    vcap_app = json.loads(os.environ["VCAP_APPLICATION"])
+    config.set("security", "hosts", vcap_app['uris'])
+    config.set("general", "debug", "false")
+
+if "DATABASE_URL" in os.environ:
+    config.set("general", "database", os.environ["DATABASE_URL"])
+    config.set("general", "debug", "false")
+else:
+    config.set("general", "database", "sqlite3:///%s" % path("%s.sqlite" % PROJECT))
+
+config.read(path("config.ini"))
+
+if not config.has_option("security", "secret"):
+    secret = ''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
+    config.set("security", "secret", secret)
