@@ -102,14 +102,26 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE_CLASSES = []
+
+if config.get("cache", "enabled") == "true":
+    MIDDLEWARE_CLASSES.append('django.middleware.cache.UpdateCacheMiddleware')
+
+MIDDLEWARE_CLASSES.extend([
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware'
+])
+
+if config.get("auth", "enabled") == "true":
+    MIDDLEWARE_CLASSES.append('django.contrib.auth.middleware.AuthenticationMiddleware')
+
+MIDDLEWARE_CLASSES.extend([
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+])
+
+if config.get("cache", "enabled") == "true":
+    MIDDLEWARE_CLASSES.append('django.middleware.cache.FetchFromCacheMiddleware')
 
 ROOT_URLCONF = "%s.urls" % BASE
 
@@ -122,23 +134,32 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-INSTALLED_APPS = [
-    'django.contrib.contenttypes',
+INSTALLED_APPS = []
+
+INSTALLED_APPS.extend([
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'website',
-]
+])
 
 if config.get("auth", "enabled") == "true":
-    INSTALLED_APPS[:0] = ['django.contrib.auth']
-    MIDDLEWARE_CLASSES[3:3] = ['django.contrib.auth.middleware.AuthenticationMiddleware']
+    INSTALLED_APPS.extend(['django.contrib.auth', 'django.contrib.contenttypes'])
 
 if config.get("admin", "enabled") == "true":
     INSTALLED_APPS.append('django.contrib.admin')
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+
+if config.get("cache", "enabled") == "true":
+    CACHES = {
+        'default': {
+            'BACKEND': "django.core.cache.backends.%s" % config.get("cache", "backend"),
+            'LOCATION': config.get("cache", "location"),
+            'TIMEOUT': config.get("cache", "timeout"),
+        }
+    }
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
