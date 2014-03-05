@@ -1,4 +1,4 @@
-ignores: ['.*', '*.pyc', '*.sqlite', 'bin', 'include', 'lib', 'public']
+ignores: ['.*', '*.pyc', '*.sqlite', 'bin', 'include', 'lib', 'public', 'passenger_wsgi.py', 'updatecode', 'config.ini']
 framework:
   type: python
   runtime: python27

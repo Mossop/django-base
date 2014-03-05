@@ -14,10 +14,9 @@ config = ConfigParser()
 config.read(path("base", "defaults.ini"))
 
 if "VCAP_APPLICATION" in os.environ:
-    # Hosts/domain names that are valid for this site; required if DEBUG is False
-    # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+    import json
     vcap_app = json.loads(os.environ["VCAP_APPLICATION"])
-    config.set("security", "hosts", vcap_app['uris'])
+    config.set("security", "hosts", ",".join(vcap_app['uris']))
     config.set("general", "debug", "false")
 
 if "DATABASE_URL" in os.environ:
