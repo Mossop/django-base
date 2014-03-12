@@ -104,7 +104,7 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = []
 
-if config.get("cache", "enabled") == "true":
+if config.get("cache", "cachesite") == "true":
     MIDDLEWARE_CLASSES.append('django.middleware.cache.UpdateCacheMiddleware')
 
 MIDDLEWARE_CLASSES.extend([
@@ -121,7 +121,7 @@ MIDDLEWARE_CLASSES.extend([
     'django.middleware.http.ConditionalGetMiddleware',
 ])
 
-if config.get("cache", "enabled") == "true":
+if config.get("cache", "cachesite") == "true":
     MIDDLEWARE_CLASSES.append('django.middleware.cache.FetchFromCacheMiddleware')
 
 ROOT_URLCONF = "%s.urls" % BASE
