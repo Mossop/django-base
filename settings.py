@@ -118,6 +118,7 @@ if config.get("auth", "enabled") == "true":
 MIDDLEWARE_CLASSES.extend([
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
 ])
 
 if config.get("cache", "enabled") == "true":
