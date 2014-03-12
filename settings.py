@@ -124,6 +124,9 @@ MIDDLEWARE_CLASSES.extend([
 if config.get("cache", "enabled") == "true":
     MIDDLEWARE_CLASSES.append('django.middleware.cache.FetchFromCacheMiddleware')
 
+if config.get("debug", "profiling") == "true":
+    MIDDLEWARE_CLASSES[0:0] = ["%s.middleware.TimingMiddleware" % BASE]
+
 ROOT_URLCONF = "%s.urls" % BASE
 
 # Python dotted path to the WSGI application used by Django's runserver.
