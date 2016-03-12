@@ -145,7 +145,6 @@ INSTALLED_APPS = []
 
 INSTALLED_APPS.extend([
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'website',
