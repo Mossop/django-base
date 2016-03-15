@@ -101,12 +101,14 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
+
+if config.get("auth", "enabled") == "true":
+    TEMPLATES[0]["OPTIONS"]["context_processors"].append('django.contrib.auth.context_processors.auth')
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
