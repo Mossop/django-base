@@ -26,7 +26,7 @@ if "DATABASE_URL" in os.environ:
 else:
     config.set("general", "database", "sqlite3:///%s" % path("%s.sqlite" % PROJECT))
 
-config.read(path("config.ini"))
+config.read(path("config", "config.ini"))
 
 if not config.has_option("security", "secret"):
     secret = ''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$^&*(-_=+)') for i in range(50)])

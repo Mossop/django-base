@@ -5,6 +5,8 @@ from urllib.parse import urlparse
 
 from .utils import path, BASE, PROJECT, config
 
+from config.settings import INSTALLED_APPS
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -143,14 +145,9 @@ ROOT_URLCONF = "%s.urls" % BASE
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = "%s.wsgi.application" % BASE
 
-INSTALLED_APPS = []
-
-INSTALLED_APPS.extend([
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'website',
-])
+INSTALLED_APPS.insert(0, 'django.contrib.staticfiles')
+INSTALLED_APPS.insert(0, 'django.contrib.messages')
+INSTALLED_APPS.insert(0, 'django.contrib.sessions')
 
 if config.get("auth", "enabled") == "true":
     INSTALLED_APPS.extend(['django.contrib.auth', 'django.contrib.contenttypes'])

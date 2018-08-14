@@ -1,9 +1,7 @@
 from django.conf.urls import include, url
 from .utils import config
 
-urlpatterns = [
-    url(r'^', include('website.urls'))
-]
+from config.urls import urlpatterns
 
 if config.get("admin", "enabled") == "true":
     from django.contrib import admin
