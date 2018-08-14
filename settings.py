@@ -1,9 +1,9 @@
 # Django settings for project.
 import os
 import json
-import urlparse
+from urllib.parse import urlparse
 
-from utils import path, BASE, PROJECT, config
+from .utils import path, BASE, PROJECT, config
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -11,7 +11,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-url = urlparse.urlparse(config.get("general", "database"))
+url = urlparse(config.get("general", "database"))
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.' + url.scheme,

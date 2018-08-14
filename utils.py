@@ -1,6 +1,7 @@
 import os
+import sys
 import random
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 BASEDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
