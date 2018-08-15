@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 from .utils import path, BASE, PROJECT, config
 
-from config.settings import INSTALLED_APPS
+from config.settings import AUTH_USER_MODEL, INSTALLED_APPS
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -112,25 +112,24 @@ TEMPLATES = [
 if config.get("auth", "enabled") == "true":
     TEMPLATES[0]["OPTIONS"]["context_processors"].append('django.contrib.auth.context_processors.auth')
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
 ]
 
 if config.get("cache", "cachesite") == "true":
-    MIDDLEWARE_CLASSES.append('django.middleware.cache.UpdateCacheMiddleware')
+    MIDDLEWARE.append('django.middleware.cache.UpdateCacheMiddleware')
 
-MIDDLEWARE_CLASSES.extend([
+MIDDLEWARE.extend([
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware'
 ])
 
 if config.get("auth", "enabled") == "true":
-    MIDDLEWARE_CLASSES.extend([
+    MIDDLEWARE.extend([
         'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.auth.middleware.SessionAuthenticationMiddleware'
 ])
 
-MIDDLEWARE_CLASSES.extend([
+MIDDLEWARE.extend([
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -138,7 +137,7 @@ MIDDLEWARE_CLASSES.extend([
 ])
 
 if config.get("cache", "cachesite") == "true":
-    MIDDLEWARE_CLASSES.append('django.middleware.cache.FetchFromCacheMiddleware')
+    MIDDLEWARE.append('django.middleware.cache.FetchFromCacheMiddleware')
 
 ROOT_URLCONF = "%s.urls" % BASE
 
