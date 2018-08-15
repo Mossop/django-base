@@ -121,7 +121,8 @@ if config.get("cache", "cachesite") == "true":
 
 MIDDLEWARE.extend([
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware'
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
 ])
 
 if config.get("auth", "enabled") == "true":
@@ -130,7 +131,6 @@ if config.get("auth", "enabled") == "true":
 ])
 
 MIDDLEWARE.extend([
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
