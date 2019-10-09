@@ -8,7 +8,7 @@ urlpatterns = []
 
 if config.get("admin", "enabled") == "true":
     from django.contrib import admin
-    urlpatterns += path('admin/', admin.site.urls)
+    urlpatterns += [path('admin/', admin.site.urls)]
 
 if DEBUG:
     from django.conf.urls.static import static
