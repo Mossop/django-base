@@ -28,6 +28,8 @@ if url.scheme == "mysql":
     DATABASES['default']['OPTIONS'] = { 'init_command': 'SET storage_engine=INNODB;' }
 elif url.scheme == 'postgres':
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+elif url.scheme == "sqlite3":
+    DATABASES['default']['NAME'] = path(DATABASES['default']['NAME'])
 
 DEBUG = config.get("general", "debug") == "true"
 

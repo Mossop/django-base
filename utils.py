@@ -24,7 +24,7 @@ if "DATABASE_URL" in os.environ:
     config.set("general", "database", os.environ["DATABASE_URL"])
     config.set("general", "debug", "false")
 else:
-    config.set("general", "database", "sqlite3:///%s" % path("%s.sqlite" % PROJECT))
+    config.set("general", "database", "sqlite3:///%s.sqlite" % PROJECT)
 
 config.read(path("config", "config.ini"))
 config.read(path("config.ini"))
