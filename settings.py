@@ -1,11 +1,12 @@
 # Django settings for project.
-import os
-import json
 from urllib.parse import urlparse
 
-from .utils import path, BASE, PROJECT, config
+from config import settings
 
-from config.settings import AUTH_USER_MODEL, INSTALLED_APPS
+from .utils import path, BASE, config
+
+AUTH_USER_MODEL = settings.AUTH_USER_MODEL
+INSTALLED_APPS = settings.INSTALLED_APPS
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -13,22 +14,25 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-url = urlparse(config.get("general", "database"))
+URL = urlparse(config.get("general", "database"))
 DATABASES = {
     "default": {
-        'ENGINE': 'django.db.backends.' + url.scheme,
-        'NAME': url.path[1:],
-        'USER': url.username,
-        'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port    }
+        'ENGINE': 'django.db.backends.' + URL.scheme,
+        'NAME': URL.path[1:],
+        'USER': URL.username,
+        'PASSWORD': URL.password,
+        'HOST': URL.hostname,
+        'PORT': URL.port
+    }
 }
 
-if url.scheme == "mysql":
-    DATABASES['default']['OPTIONS'] = { 'init_command': 'SET storage_engine=INNODB;' }
-elif url.scheme == 'postgres':
+if URL.scheme == "mysql":
+    DATABASES['default']['OPTIONS'] = {
+        'init_command': 'SET storage_engine=INNODB;'
+    }
+elif URL.scheme == 'postgres':
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
-elif url.scheme == "sqlite3":
+elif URL.scheme == "sqlite3":
     DATABASES['default']['NAME'] = path(DATABASES['default']['NAME'])
 
 DEBUG = config.get("general", "debug") == "true"
@@ -89,7 +93,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -130,7 +134,7 @@ MIDDLEWARE.extend([
 if config.get("auth", "enabled") == "true":
     MIDDLEWARE.extend([
         'django.contrib.auth.middleware.AuthenticationMiddleware',
-])
+    ])
 
 MIDDLEWARE.extend([
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -184,3 +188,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': config.get("logging", "level")
+        },
+    },
+}
