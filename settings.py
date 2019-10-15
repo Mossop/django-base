@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 from config import settings
 
-from .utils import path, BASE, config
+from .utils import path, BASE, CONFIG
 
 AUTH_USER_MODEL = settings.AUTH_USER_MODEL
 INSTALLED_APPS = settings.INSTALLED_APPS
@@ -14,7 +14,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-URL = urlparse(config.get("general", "database"))
+URL = urlparse(CONFIG.get("general", "database"))
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.' + URL.scheme,
@@ -35,11 +35,11 @@ elif URL.scheme == 'postgres':
 elif URL.scheme == "sqlite3":
     DATABASES['default']['NAME'] = path(DATABASES['default']['NAME'])
 
-DEBUG = config.get("general", "debug") == "true"
+DEBUG = CONFIG.get("general", "debug") == "true"
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = config.get("security", "hosts").split(",")
+ALLOWED_HOSTS = CONFIG.get("security", "hosts").split(",")
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -64,22 +64,22 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = path(config.get('path', 'media'))
+MEDIA_ROOT = path(CONFIG.get('path', 'media'))
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = config.get('url', 'media')
+MEDIA_URL = CONFIG.get('url', 'media')
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = path(config.get('path', 'static'))
+STATIC_ROOT = path(CONFIG.get('path', 'static'))
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = config.get('url', 'static')
+STATIC_URL = CONFIG.get('url', 'static')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -97,7 +97,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = config.get("security", "secret")
+SECRET_KEY = CONFIG.get("security", "secret")
 
 # List of callables that know how to import templates from various sources.
 TEMPLATES = [
@@ -115,14 +115,15 @@ TEMPLATES = [
     },
 ]
 
-if config.get("auth", "enabled") == "true":
-    TEMPLATES[0]["OPTIONS"]["context_processors"].append('django.contrib.auth.context_processors.auth')
+if CONFIG.get("auth", "enabled") == "true":
+    TEMPLATES[0]["OPTIONS"]["context_processors"] \
+            .append('django.contrib.auth.context_processors.auth')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
 ]
 
-if config.get("cache", "cachesite") == "true":
+if CONFIG.get("cache", "cachesite") == "true":
     MIDDLEWARE.append('django.middleware.cache.UpdateCacheMiddleware')
 
 MIDDLEWARE.extend([
@@ -131,7 +132,7 @@ MIDDLEWARE.extend([
     'django.middleware.csrf.CsrfViewMiddleware',
 ])
 
-if config.get("auth", "enabled") == "true":
+if CONFIG.get("auth", "enabled") == "true":
     MIDDLEWARE.extend([
         'django.contrib.auth.middleware.AuthenticationMiddleware',
     ])
@@ -142,7 +143,7 @@ MIDDLEWARE.extend([
     'django.middleware.http.ConditionalGetMiddleware',
 ])
 
-if config.get("cache", "cachesite") == "true":
+if CONFIG.get("cache", "cachesite") == "true":
     MIDDLEWARE.append('django.middleware.cache.FetchFromCacheMiddleware')
 
 ROOT_URLCONF = "%s.urls" % BASE
@@ -154,20 +155,20 @@ INSTALLED_APPS.insert(0, 'django.contrib.staticfiles')
 INSTALLED_APPS.insert(0, 'django.contrib.messages')
 INSTALLED_APPS.insert(0, 'django.contrib.sessions')
 
-if config.get("auth", "enabled") == "true":
+if CONFIG.get("auth", "enabled") == "true":
     INSTALLED_APPS.extend(['django.contrib.auth', 'django.contrib.contenttypes'])
 
-if config.get("admin", "enabled") == "true":
+if CONFIG.get("admin", "enabled") == "true":
     INSTALLED_APPS.append('django.contrib.admin')
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
-if config.get("cache", "enabled") == "true":
+if CONFIG.get("cache", "enabled") == "true":
     CACHES = {
         'default': {
-            'BACKEND': "django.core.cache.backends.%s" % config.get("cache", "backend"),
-            'LOCATION': config.get("cache", "location"),
-            'TIMEOUT': config.get("cache", "timeout"),
+            'BACKEND': "django.core.cache.backends.%s" % CONFIG.get("cache", "backend"),
+            'LOCATION': CONFIG.get("cache", "location"),
+            'TIMEOUT': CONFIG.get("cache", "timeout"),
         }
     }
 
@@ -195,7 +196,7 @@ LOGGING = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'level': config.get("logging", "level")
+            'level': CONFIG.get("logging", "level")
         },
     },
 }

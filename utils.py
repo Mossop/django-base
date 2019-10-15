@@ -1,5 +1,4 @@
 import os
-import sys
 import random
 from configparser import ConfigParser
 
@@ -11,24 +10,19 @@ def path(*x):
 BASE = os.path.basename(os.path.dirname(__file__))
 PROJECT = os.path.basename(BASEDIR)
 
-config = ConfigParser()
-config.read(path("base", "defaults.ini"))
-
-if "VCAP_APPLICATION" in os.environ:
-    import json
-    vcap_app = json.loads(os.environ["VCAP_APPLICATION"])
-    config.set("security", "hosts", ",".join(vcap_app['uris']))
-    config.set("general", "debug", "false")
+CONFIG = ConfigParser()
+CONFIG.read(path("base", "defaults.ini"))
 
 if "DATABASE_URL" in os.environ:
-    config.set("general", "database", os.environ["DATABASE_URL"])
-    config.set("general", "debug", "false")
+    CONFIG.set("general", "database", os.environ["DATABASE_URL"])
+    CONFIG.set("general", "debug", "false")
 else:
-    config.set("general", "database", "sqlite3:///%s.sqlite" % PROJECT)
+    CONFIG.set("general", "database", "sqlite3:///%s.sqlite" % PROJECT)
 
-config.read(path("config", "config.ini"))
-config.read(path("config.ini"))
+CONFIG.read(path("config", "config.ini"))
+CONFIG.read(path("config.ini"))
 
-if not config.has_option("security", "secret"):
-    secret = ''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$^&*(-_=+)') for i in range(50)])
-    config.set("security", "secret", secret)
+if not CONFIG.has_option("security", "secret"):
+    SECRET = ''.join([random.SystemRandom().choice(
+        'abcdefghijklmnopqrstuvwxyz0123456789!@#$^&*(-_=+)') for i in range(50)])
+    CONFIG.set("security", "secret", SECRET)
