@@ -6,7 +6,6 @@ from config import settings
 from .utils import path, BASE, CONFIG
 
 AUTH_USER_MODEL = settings.AUTH_USER_MODEL
-INSTALLED_APPS = settings.INSTALLED_APPS
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -151,15 +150,19 @@ ROOT_URLCONF = "%s.urls" % BASE
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = "%s.wsgi.application" % BASE
 
-INSTALLED_APPS.insert(0, 'django.contrib.staticfiles')
-INSTALLED_APPS.insert(0, 'django.contrib.messages')
-INSTALLED_APPS.insert(0, 'django.contrib.sessions')
+INSTALLED_APPS = [
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles'
+]
+
+if CONFIG.get("admin", "enabled") == "true":
+    INSTALLED_APPS.insert(0, 'django.contrib.admin')
+
+INSTALLED_APPS.extend(settings.INSTALLED_APPS)
 
 if CONFIG.get("auth", "enabled") == "true":
     INSTALLED_APPS.extend(['django.contrib.auth', 'django.contrib.contenttypes'])
-
-if CONFIG.get("admin", "enabled") == "true":
-    INSTALLED_APPS.append('django.contrib.admin')
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
