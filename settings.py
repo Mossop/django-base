@@ -202,4 +202,8 @@ LOGGING = {
             'level': CONFIG.get("logging", "level")
         },
     },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['console'],
+    }
 }
