@@ -27,7 +27,7 @@ DATABASES = {
 
 if URL.scheme == "mysql":
     DATABASES['default']['OPTIONS'] = {
-        'init_command': 'SET storage_engine=INNODB;'
+        'init_command': 'SET default_storage_engine=INNODB;'
     }
 elif URL.scheme == 'postgres':
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
