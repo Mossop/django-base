@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib import admin
 from django.conf.urls.static import static
 
-from config.urls import app_url_patterns
+from config.urls import APP_URL_PATTERNS
 
 from .utils import CONFIG
 from .settings import DEBUG, STATIC_URL, STATIC_ROOT
@@ -15,4 +15,4 @@ if CONFIG.get("admin", "enabled") == "true":
 if DEBUG:
     urlpatterns += static(STATIC_URL, document_root=STATIC_ROOT)
 
-urlpatterns.extend(app_url_patterns)
+urlpatterns.extend(APP_URL_PATTERNS)
