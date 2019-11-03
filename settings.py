@@ -7,6 +7,8 @@ from .utils import path, BASE, CONFIG
 
 AUTH_USER_MODEL = settings.AUTH_USER_MODEL
 
+SILENCED_SYSTEM_CHECKS = settings.SILENCED_SYSTEM_CHECKS
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -27,7 +29,8 @@ DATABASES = {
 
 if URL.scheme == "mysql":
     DATABASES['default']['OPTIONS'] = {
-        'init_command': 'SET default_storage_engine=INNODB;'
+        'init_command': 'SET default_storage_engine=INNODB;',
+        'charset': 'utf8mb4',
     }
 elif URL.scheme == 'postgres':
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
