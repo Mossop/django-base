@@ -29,7 +29,7 @@ DATABASES = {
 
 if URL.scheme == "mysql":
     DATABASES['default']['OPTIONS'] = {
-        'init_command': 'SET default_storage_engine=INNODB;',
+        'init_command': 'SET default_storage_engine=INNODB; SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;',
         'charset': 'utf8mb4',
     }
 elif URL.scheme == 'postgres':
