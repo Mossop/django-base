@@ -5,9 +5,10 @@ from config import settings
 
 from .utils import path, BASE, CONFIG
 
-AUTH_USER_MODEL = settings.AUTH_USER_MODEL
+if CONFIG.has_option('auth', 'model'):
+    AUTH_USER_MODEL = CONFIG.get('auth', 'model')
 
-SILENCED_SYSTEM_CHECKS = settings.SILENCED_SYSTEM_CHECKS
+SILENCED_SYSTEM_CHECKS = getattr(settings, 'SILENCED_SYSTEM_CHECKS', [])
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
