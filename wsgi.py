@@ -16,6 +16,7 @@ framework.
 import os
 
 from .utils import BASE
+from .signals import wsgi_startup
 
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
 # if running multiple sites in the same mod_wsgi process. To fix this, use
@@ -29,3 +30,5 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "%s.settings" % BASE)
 # pylint: disable=wrong-import-position, wrong-import-order
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
+
+wsgi_startup.send_robust(None)
