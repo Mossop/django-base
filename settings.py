@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 from config import settings
 
-from .utils import path, BASE, CONFIG
+from .utils import path, BASE, CONFIG, merge_in
 
 if CONFIG.has_option('auth', 'model'):
     AUTH_USER_MODEL = CONFIG.get('auth', 'model')
@@ -199,15 +199,29 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'default': {
+            'format': '%(asctime)s %(levelname)-8s %(name)-25s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'level': CONFIG.get("logging", "level")
+            'level': CONFIG.get("logging", "level"),
+            'formatter': 'default',
+        },
+    },
+    'loggers': {
+        'django': {
+            'level': 'INFO',
         },
     },
     'root': {
-        'level': 'DEBUG',
+        'level': 'WARNING',
         'handlers': ['console'],
     }
 }
+
+merge_in(LOGGING, settings.LOGGING)

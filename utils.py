@@ -26,3 +26,13 @@ if not CONFIG.has_option("security", "secret"):
     SECRET = ''.join([random.SystemRandom().choice(
         'abcdefghijklmnopqrstuvwxyz0123456789!@#$^&*(-_=+)') for i in range(50)])
     CONFIG.set("security", "secret", SECRET)
+
+def merge_in(main, overrides):
+    for (key, value) in overrides.items():
+        if key in main:
+            if isinstance(main[key], dict):
+                main[key].update(value)
+            else:
+                main[key] = value
+        else:
+            main[key] = value
