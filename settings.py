@@ -40,6 +40,9 @@ elif URL.scheme == "sqlite3":
 
 DEBUG = CONFIG.get("general", "debug") == "true"
 
+TEST_MODE = False
+TEST_RUNNER = 'base.testrunner.TestSuiteRunner'
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = CONFIG.get("security", "hosts").split(",")
