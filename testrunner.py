@@ -1,10 +1,9 @@
-from django.conf import settings
 from django.test.runner import DiscoverRunner
 
-from .utils import CONFIG, path
+from .config import TEST_MODE
 
 class TestSuiteRunner(DiscoverRunner):
     def __init__(self, *args, **kwargs):
-        settings.TEST_MODE = True
-        CONFIG.read(path('test.ini'))
+        if not TEST_MODE:
+            raise Exception('Unexpected test run outside of test mode.')
         super(TestSuiteRunner, self).__init__(*args, **kwargs)

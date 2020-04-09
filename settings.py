@@ -3,7 +3,8 @@ from urllib.parse import urlparse
 
 from config import settings
 
-from .utils import path, BASE, CONFIG, merge_in
+from .config import BASE, CONFIG, PATHS
+from .utils import path, merge_in
 
 if CONFIG.has_option('auth', 'model'):
     AUTH_USER_MODEL = CONFIG.get('auth', 'model')
@@ -40,7 +41,6 @@ elif URL.scheme == "sqlite3":
 
 DEBUG = CONFIG.get("general", "debug") == "true"
 
-TEST_MODE = False
 TEST_RUNNER = 'base.testrunner.TestSuiteRunner'
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
@@ -70,7 +70,7 @@ USE_TZ = CONFIG.get('general', 'timezones') == 'true'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = path(CONFIG.get('path', 'media'))
+MEDIA_ROOT = PATHS.get('media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -81,7 +81,7 @@ MEDIA_URL = CONFIG.get('url', 'media')
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = path(CONFIG.get('path', 'static'))
+STATIC_ROOT = PATHS.get('static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
