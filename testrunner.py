@@ -11,4 +11,8 @@ class TestSuiteRunner(DiscoverRunner):
 
         logger = logging.getLogger('django')
         logger.setLevel(logging.ERROR)
+        logger = logging.getLogger('api')
+        logger.setLevel(logging.WARNING)
+        logger = logging.getLogger('app')
+        logger.setLevel(logging.WARNING)
         super(TestSuiteRunner, self).__init__(*args, **kwargs)
