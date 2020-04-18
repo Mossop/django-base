@@ -15,7 +15,7 @@ framework.
 """
 import os
 
-from .utils import BASE
+from .config import BASE
 from .signals import wsgi_startup
 
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
