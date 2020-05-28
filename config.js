@@ -17,40 +17,57 @@ function path(...parts) {
 }
 exports.path = path;
 
-function assign(source, overrides) {
-  if (typeof source === "object" && typeof overrides === "object") {
-    for (let key of Object.keys(overrides)) {
-      if (key in source) {
-        source[key] = assign(source[key], overrides[key]);
-      } else {
-        source[key] = overrides[key];
-      }
+/**
+ * @param {object} target
+ * @param {object} overrides
+ * @return {void}
+ */
+function deep_assign_object(target, overrides) {
+  for (let key of Object.keys(overrides)) {
+    if (key in target && typeof target[key] === "object") {
+      deep_assign_object(target[key], overrides[key]);
+    } else {
+      target[key] = overrides[key];
     }
-
-    return source;
-  } else {
-    return overrides;
   }
 }
 
-function parse(config, ...parts) {
-  let file = path(...parts);
+/**
+ * @param {object} target
+ * @param {object[]} overrides
+ * @return {object}
+ */
+function deep_assign(target, ...overrides) {
+  for (let override of overrides) {
+    deep_assign_object(target, override);
+  }
+
+  return target;
+}
+
+/**
+ * @param {string} file
+ * @return {object}
+ */
+function parse(file) {
   try {
     let stats = fs.statSync(file);
     if (!stats.isFile()) {
-      return;
+      return {};
     }
   } catch (e) {
-    return;
+    return {};
   }
 
-  return assign(config, ini.parse(fs.readFileSync(file, {
+  return ini.parse(fs.readFileSync(file, {
     encoding: "utf8",
-  })));
+  }));
 }
 
-let config = parse(undefined, "base", "defaults.ini");
-config = parse(config, "config", "config.ini");
-config = parse(config, "config.ini");
+let config = deep_assign(
+  parse(path("base", "defaults.ini")),
+  parse(path("config", "config.ini")),
+  parse(path("config.ini")),
+);
 
 exports.config = config;
