@@ -1,10 +1,31 @@
 # Django settings for project.
 from urllib.parse import urlparse
+from typing import TypedDict, Dict, List, Any, Optional
 
 from config import settings
 
 from .config import BASE, CONFIG, PATHS
 from .utils import path, merge_in
+
+class BaseDatabaseSetting(TypedDict):
+    ENGINE: str
+
+class DatabaseSetting(BaseDatabaseSetting, total=False):
+    NAME: Optional[str]
+    USER: Optional[str]
+    PASSWORD: Optional[str]
+    HOST: Optional[str]
+    PORT: Optional[int]
+    OPTIONS: Optional[Dict[str, Any]]
+
+class BaseTemplateSetting(TypedDict):
+    BACKEND: str
+
+class TemplateSetting(BaseTemplateSetting, total=False):
+    NAME: Optional[str]
+    DIRS: Optional[List[str]]
+    APP_DIRS: Optional[bool]
+    OPTIONS: Optional[Dict[str, Any]]
 
 if CONFIG.has_option('auth', 'model'):
     AUTH_USER_MODEL = CONFIG.get('auth', 'model')
@@ -18,14 +39,15 @@ ADMINS = (
 MANAGERS = ADMINS
 
 URL = urlparse(CONFIG.get("general", "database"))
-DATABASES = {
+DATABASES: Dict[str, DatabaseSetting] = {
     "default": {
         'ENGINE': 'django.db.backends.' + URL.scheme,
         'NAME': URL.path[1:],
         'USER': URL.username,
         'PASSWORD': URL.password,
         'HOST': URL.hostname,
-        'PORT': URL.port
+        'PORT': URL.port,
+        'OPTIONS': {},
     }
 }
 
@@ -89,7 +111,9 @@ STATIC_URL = CONFIG.get('url', 'static')
 
 # Additional locations of static files
 if CONFIG.has_section('staticfiles'):
-    STATICFILES_DIRS = [(option, CONFIG.get('staticfiles', option)) for option in CONFIG.options('staticfiles')]
+    STATICFILES_DIRS = [
+        (option, CONFIG.get('staticfiles', option)) for option in CONFIG.options('staticfiles')
+    ]
 else:
     STATICFILES_DIRS = []
 
@@ -105,7 +129,7 @@ STATICFILES_FINDERS = (
 SECRET_KEY = CONFIG.get("security", "secret")
 
 # List of callables that know how to import templates from various sources.
-TEMPLATES = [
+TEMPLATES: List[TemplateSetting] = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
@@ -121,8 +145,15 @@ TEMPLATES = [
 ]
 
 if CONFIG.get("auth", "enabled") == "true":
-    TEMPLATES[0]["OPTIONS"]["context_processors"] \
-            .append('django.contrib.auth.context_processors.auth')
+    options = TEMPLATES[0]["OPTIONS"]
+    if options is None:
+        options = {}
+        TEMPLATES[0]["OPTIONS"] = options
+    processors = options['context_processors']
+    if processors is None:
+        processors = []
+        options['context_processors'] = processors
+    processors.append('django.contrib.auth.context_processors.auth')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
