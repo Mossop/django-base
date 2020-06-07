@@ -12,6 +12,10 @@ exports.BASEDIR = BASEDIR;
 const PROJECT = nodePath.basename(BASEDIR);
 exports.PROJECT = PROJECT;
 
+/**
+ * @param {string[]} parts
+ * @return {string}
+ */
 function path(...parts) {
   return nodePath.join(BASEDIR, ...parts);
 }
